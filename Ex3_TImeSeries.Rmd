@@ -1,0 +1,23 @@
+---
+title: "Untitled"
+author: "Gina Magnussen"
+date: "September 11, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+
+
+```
+
+```{r}
+#setwd("/home/shomea/g/ginama/H2018/TMA4285 Time series models/Exercise 3 (Project 1)/")
+ds <- read.table("/home/shomea/g/ginama/H2018/TMA4285 Time series models/Exercise 3 (Project 1)/DataEx3G14.txt")
+print(ds)
+```
+
+
+
