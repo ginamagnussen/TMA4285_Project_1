@@ -1,23 +1,52 @@
 ---
-title: "Untitled"
-author: "Gina Magnussen"
+title: "Branch Sivert"
+author: "Sivert Selnes"
 date: "September 11, 2018"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
-
-
-
+library("itsmr")
 ```
 
 ```{r}
-#setwd("/home/shomea/g/ginama/H2018/TMA4285 Time series models/Exercise 3 (Project 1)/")
-ds <- read.table("/home/shomea/g/ginama/H2018/TMA4285 Time series models/Exercise 3 (Project 1)/DataEx3G14.txt")
-print(ds)
+setwd("~/Tidsrekker/TMA4285_Project_1")
+dataseries <- read.table("DataEx3G14.txt")
 ```
 
 
+Preliminary investigation:
+
+1. Exploring the data with plotting of relevant statistics
+
+* Trends
+* Seasonality
+* Any apparent sharp changes in behavior
+* Outliers
+
+We want to obtain a time series with stationary residuals, i.e. residuals that are identically distributed for any time $t$. 
+
+To begin with we try to estimate a trend in the data (if any). 
+
+```{r}
+plot.ts(dataseries)
+```
+
+The dataseries does not reveal any obvious signs of non-stationarity. There might be a seasonal component (?), with period 100. The fluctuations do not apper to grow with time, suggesting that a transformation (such as log) is not neccessary.
+```{r}
+M <- c("season", 5, "trend", 0) # Set data model
+residuals = Resid(dataseries,M) 
+test(residuals) # Test residuals for stationarity and randomness
+```
+
+
+We might also want to examine the data with a differencing operator applied:
+
+```{r}
+# New model
+M = c("diff",1)
+residuals = Resid(dataseries,M)
+test(residuals)
+```
 
