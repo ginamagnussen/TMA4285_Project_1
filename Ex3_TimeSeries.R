@@ -20,6 +20,7 @@ forecast(dataseries,M,a)
 M = c("diff",1)
 e = Resid(dataseries,M)
 a = arma(e,1,0) 
+
 print(a)
 
 
