@@ -10,13 +10,13 @@ plot.ts(dataseries)
 library("itsmr") # Time series analysis using the Innovations Algorithm
 # M = c("exp","season",12,"trend",1) # Not working with "exp"
 
-M <- c("season", 12, "trend", 1) # Set data model
+M <- c("season", 12, "trend", 1) # Set data model: Subtracting trend component and seasonal components
 e = Resid(dataseries,M) 
-test(e) # Test residuals for stationarity and randomness
+test(e) # Test residuals (adjusted series) for stationarity and randomness
 a = arma(e,p=2,q=1) # Estimate ARMA model coefficients using maximum likelihood, returns ARMA model
 forecast(dataseries,M,a)
 
-# New model
+# New model: Differencing the data 
 M = c("diff",1)
 e = Resid(dataseries,M)
 a = arma(e,1,0) 
@@ -59,15 +59,14 @@ library("forecast")
 auto.arima(dataseries) # Fit best ARIMA model to univariate time series
 
 fit <- auto.arima(dataseries)
-LH.pred<-predict(fit,n.ahead=100)
+LH.pred<-predict(fit,n.ahead=100) #Predict the next 100 steps of the arima series
 plot(dataseries,type="o", lwd="1")
-lines(LH.pred$pred,col="red",type="o",lwd="1")
+lines(LH.pred$pred,col="red",type="o",lwd="1") 
 grid()
 
 fcast <- forecast(fit)
 plot(fcast)
 
 
-ets(dataseries)
-plot(ets(dataseries, model = 'ZZZ'))
-
+ets(dataseries) # Exponential smoothing state space model
+plot(ets(dataseries, model = 'ZZZ')) #model = 'ZZZ' : error type, trend type and season type, Z = automatically selected
