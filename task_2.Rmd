@@ -1,0 +1,40 @@
+---
+title: "Untitled"
+author: "Gina Magnussen"
+date: "September 18, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Model parameter estimation including uncertainty
+
+\todo{What assumptions are / can be made?}
+
+
+* Have a stationary process / series of residuals (trend and seasonality removed)
+* Fit an ARMA model to the residuals 
+* Estimate \phi, \theta and \sigma^2 when p and q are known.
+
+\begin{itemize}
+  \item Weakly / strictly stationary
+  \item Causal
+  \item Invertible
+  \item Deterministic / Wold decomposition
+  \item Existence and uniqueness
+  \item ACF / PACF
+  \item Zero-mean ARMA model?
+  \item AICC criterion
+\end{itemize}
+
+
+### Notes
+
+* ARMA models is a class of linear time series models
+* ARMA is a parametric family 
+* MSE of forecasts will depend on errors from estimation of parameters of the model (will be larger for higher-order models)
+
+
+
