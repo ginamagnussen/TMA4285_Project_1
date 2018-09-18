@@ -9,8 +9,21 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Model parameter estimation including uncertainty
+```{r}
+library(itsmr)
+# Sample mean, variance and covariance?
+dataseries <- ts(read.table("DataEx3G14.txt"))
+model <- arma(dataseries, p = 2, q = 1)
+print(model)
 
+# Maximum likelihood
+# AICC 
+
+```
+
+
+
+## Model parameter estimation including uncertainty
 \todo{What assumptions are / can be made?}
 
 
@@ -21,11 +34,8 @@ knitr::opts_chunk$set(echo = TRUE)
 \begin{itemize}
   \item Weakly / strictly stationary
   \item Causal
-  \item Invertible
-  \item Deterministic / Wold decomposition
   \item Existence and uniqueness
   \item ACF / PACF
-  \item Zero-mean ARMA model?
   \item AICC criterion
 \end{itemize}
 
@@ -35,6 +45,16 @@ knitr::opts_chunk$set(echo = TRUE)
 * ARMA models is a class of linear time series models
 * ARMA is a parametric family 
 * MSE of forecasts will depend on errors from estimation of parameters of the model (will be larger for higher-order models)
+
+
+
+### Questions
+
+* Goodness of fit test: Error terms/residuals white noise or not? QQ-plot
+
+* How much theory should be included, how much should be justified?
+
+
 
 
 
