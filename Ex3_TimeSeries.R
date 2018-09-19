@@ -1,32 +1,48 @@
 # TMA4285 Time series models, autumn 2018
+
 library("itsmr") # Time series analysis using the Innovations Algorithm
 library("TTR") # Functions to create Technical Trading Rules
 library("aTSA")
 library("tseries") # Time series analysis and computational finance
 library("forecast")
 
-
+# Import ARMA-series
+setwd("~/Tidsrekker/TMA4285_Project_1")
 dataseries <- ts(read.table("DataEx3G14.txt"))
 
-plot.ts(dataseries)
+# 1. Plotting of relevant statistics
+
+plot.ts(dataseries) # Plot of the time series itself
+
+acf(dataseries) # Autocorrelation function
+
+Pacf(dataseries) # Partial ACF
 
 #Check stationarity
 adf.test(dataseries) # Augmented Dickey-Fuller test
+                      # p-value < 0.05 indicates the TS is stationary
+kpss.test(tsData)
 
 
-a = arma(e,p=2,q=1) # Estimate ARMA model coefficients using maximum likelihood, returns ARMA model
-forecast(dataseries,M,a)
 
 
+# Estimate ARMA model coefficients using maximum likelihood, returns ARMA model
 
-# SMA: Calculate moving averages (MA)  of a series, n = number of periods to average over
-dsSMA2 <- SMA(dataseries, n = 2) 
-dsSMA5 <- SMA(dataseries, n = 5)
-dsSMA10 <- SMA(dataseries, n = 10)
-dsSMA50 <- SMA(dataseries, n=50)
-dsSMA100 <- SMA(dataseries, n=100)
+armaFit = arma(dataseries, order = c(2, 1), include.intercept = TRUE, qr.tol = 1e-07)
+summary(armaFit)
+plot(armaFit) # makes three plots: data, ACF, PACF 
 
-plot.ts(dsSMA50)
+
+coef(armaFit)
+vcov(armaFit)
+residuals(armaFit) # 500 resiudals: is this W?
+fitted(armaFit) # Presumeably the X-hat vaules
+print(armaFit)
+
+acf(residuals(armaFit), na.action=na.remove)
+pacf(residuals(armaFit), na.action=na.remove)
+
+# Forecasting
 
 
 

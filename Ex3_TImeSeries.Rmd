@@ -1,7 +1,7 @@
 ---
-title: "Branch Sivert"
+title: "Time series analysis"
 author: "Sivert Selnes"
-date: "September 11, 2018"
+date: "\today"
 output: html_document
 ---
 
@@ -16,37 +16,39 @@ dataseries <- read.table("DataEx3G14.txt")
 ```
 
 
-Preliminary investigation:
+### Abstract
 
-1. Exploring the data with plotting of relevant statistics
+### Introduction
 
-* Trends
-* Seasonality
-* Any apparent sharp changes in behavior
-* Outliers
+### Theory
+ * What is a time series
+ * Calculation of ACF - and what do we use it for?
+ * Calculation of PACF - and what do we use it for?
 
-We want to obtain a time series with stationary residuals, i.e. residuals that are identically distributed for any time $t$. 
+ * Calculation of model parameters $\phi$, $\theta$ and $\sigma^2$
+ * Need the uncertainty in those as well
+ 
+ * Calculate / arrive at model prediction at sample points
+ * Calculate prediction for future values
+ * Calculate uncertainty in both cases
+ 
+ * Diagnostics: strategies for assessing model choice 
+ 
+### Data analysis
+ * The plots from 1-4 go in here, basicly most of the results of the R-code are displayed here.
 
-To begin with we try to estimate a trend in the data (if any). 
+### Discussion
+ * Comments on prelim plots: time series, ACF, PACF
+ 
+ * Comments on estimated paramateres and uncertainties in particular
+ 
+ * Comments on fit/prediction of the chosen ARMA model
+ 
+ * Finally, comment on the diagnostics, AICC
+ 
+ 
+### Conclusion
 
-```{r}
-plot.ts(dataseries)
-```
 
-The dataseries does not reveal any obvious signs of non-stationarity. There might be a seasonal component (?), with period 100. The fluctuations do not apper to grow with time, suggesting that a transformation (such as log) is not neccessary.
-```{r}
-M <- c("season", 5, "trend", 0) # Set data model
-residuals = Resid(dataseries,M) 
-test(residuals) # Test residuals for stationarity and randomness
-```
-
-
-We might also want to examine the data with a differencing operator applied:
-
-```{r}
-# New model
-M = c("diff",1)
-residuals = Resid(dataseries,M)
-test(residuals)
-```
+## Appendix, References
 
