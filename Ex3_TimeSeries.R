@@ -10,7 +10,9 @@ library("forecast")
 setwd("~/Tidsrekker/TMA4285_Project_1")
 dataseries <- ts(read.table("DataEx3G14.txt"))
 
+
 # 1. Plotting of relevant statistics
+###############################################
 
 plot.ts(dataseries) # Plot of the time series itself
 
@@ -21,17 +23,17 @@ Pacf(dataseries) # Partial ACF
 #Check stationarity
 adf.test(dataseries) # Augmented Dickey-Fuller test
                       # p-value < 0.05 indicates the TS is stationary
-kpss.test(tsData)
+kpss.test(dataseries)
 
 
 
 
 # Estimate ARMA model coefficients using maximum likelihood, returns ARMA model
+############################################################
 
 armaFit = arma(dataseries, order = c(2, 1), include.intercept = TRUE, qr.tol = 1e-07)
 summary(armaFit)
 plot(armaFit) # makes three plots: data, ACF, PACF 
-
 
 coef(armaFit)
 vcov(armaFit)
@@ -42,17 +44,12 @@ print(armaFit)
 acf(residuals(armaFit), na.action=na.remove)
 pacf(residuals(armaFit), na.action=na.remove)
 
+
 # Forecasting
+#######################################################################
+ # Here we can i) Forecast like on p. 101 in the book or ii) Use the forecast function in R
+class(armaFit)
+fcast = forecast(armaFit, h=20)
 
 
-
-
-fit <- auto.arima(dataseries)
-LH.pred<-predict(fit,n.ahead=100) #Predict the next 100 steps of the arima series
-plot(dataseries,type="o", lwd="1")
-lines(LH.pred$pred,col="red",type="o",lwd="1") 
-grid()
-
-fcast <- forecast(fit)
-plot(fcast)
 

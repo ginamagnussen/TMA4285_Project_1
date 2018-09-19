@@ -23,6 +23,8 @@ dataseries <- read.table("DataEx3G14.txt")
 ### Theory
  * What is a time series
  * Calculation of ACF - and what do we use it for?
+ 
+
  * Calculation of PACF - and what do we use it for?
 
  * Calculation of model parameters $\phi$, $\theta$ and $\sigma^2$
