@@ -1,21 +1,6 @@
 # TMA4285 Time series models, autumn 2018
 
 library("itsmr") # Time series analysis using the Innovations Algorithm
-# M = c("exp","season",12,"trend",1) # Not working with "exp"
-
-M <- c("season", 12, "trend", 1) # Set data model: Subtracting trend component and seasonal components
-e = Resid(dataseries,M) 
-test(e) # Test residuals (adjusted series) for stationarity and randomness
-a = arma(e,p=2,q=1) # Estimate ARMA model coefficients using maximum likelihood, returns ARMA model
-forecast(dataseries,M,a)
-
-# New model: Differencing the data 
-M = c("diff",1)
-e = Resid(dataseries,M)
-a = arma(e,1,0) 
-
-print(a)
-
 library("TTR") # Functions to create Technical Trading Rules
 library("aTSA")
 library("tseries") # Time series analysis and computational finance
@@ -23,7 +8,7 @@ library("forecast")
 
 
 # Import ARMA-series
-setwd("~/Tidsrekker/TMA4285_Project_1")
+#setwd("~/Tidsrekker/TMA4285_Project_1")
 dataseries <- ts(read.table("DataEx3G14.txt"))
 
 
@@ -61,12 +46,6 @@ acf(residuals(armaFit), na.action=na.remove)
 pacf(residuals(armaFit), na.action=na.remove)
 
 
-fit <- auto.arima(dataseries)
-LH.pred<-predict(fit,n.ahead=100) #Predict the next 100 steps of the arima series
-plot(dataseries,type="o", lwd="1")
-lines(LH.pred$pred,col="red",type="o",lwd="1") 
-grid()
-
 
 # Forecasting
 #######################################################################
@@ -77,4 +56,6 @@ fcast = forecast(armaFit, h=20)
 
 ets(dataseries) # Exponential smoothing state space model
 plot(ets(dataseries, model = 'ZZZ')) #model = 'ZZZ' : error type, trend type and season type, Z = automatically selected
+
+# AICC
 

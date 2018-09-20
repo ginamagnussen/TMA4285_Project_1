@@ -25,8 +25,6 @@ dataseries <- read.table("DataEx3G14.txt")
 ### Theory
  * What is a time series
  * Calculation of ACF - and what do we use it for?
- 
-
  * Calculation of PACF - and what do we use it for?
 
  * Calculation of model parameters $\phi$, $\theta$ and $\sigma^2$
@@ -36,11 +34,14 @@ dataseries <- read.table("DataEx3G14.txt")
  * Calculate prediction for future values
  * Calculate uncertainty in both cases
  
- * Diagnostics: strategies for assessing model choice 
+ * Diagnostics: strategies for assessing model choice (AICC)
  
 ### Data analysis
  * The plots from 1-4 go in here, basicly most of the results of the R-code are displayed here.
 
+ARIMA
+Forecast plot
+AICC
 ### Discussion
  * Comments on prelim plots: time series, ACF, PACF
  
