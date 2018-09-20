@@ -5,6 +5,7 @@ library("TTR") # Functions to create Technical Trading Rules
 library("aTSA")
 library("tseries") # Time series analysis and computational finance
 library("forecast")
+library("ggplot2")
 
 
 # Import ARMA-series
@@ -33,8 +34,9 @@ kpss.test(dataseries)
 ############################################################
 
 armaFit = arma(dataseries, order = c(2, 1), include.intercept = TRUE, qr.tol = 1e-07)
-summary(armaFit)
-plot(armaFit) # makes three plots: data, ACF, PACF 
+summary(armaFit) 
+plot(armaFit) # makes three plots: series, ACF, PACF of data and residuals
+
 
 coef(armaFit)
 vcov(armaFit)
@@ -45,17 +47,35 @@ print(armaFit)
 acf(residuals(armaFit), na.action=na.remove)
 pacf(residuals(armaFit), na.action=na.remove)
 
+## ARIMA (to forecast)
+arimaFit <- arima(dataseries, order = c(2,0,1))
+summary(arimaFit)
+plot(arimaFit$residuals) # Scale these?
+acf(arimaFit$residuals)
+pacf(arimaFit$residuals)
+hist(arimaFit$residuals)
+arimaFit$var.coef
 
 
 # Forecasting
 #######################################################################
  # Here we can i) Forecast like on p. 101 in the book or ii) Use the forecast function in R
 class(armaFit)
-fcast = forecast(armaFit, h=20)
+fcast = forecast(dataseries, h=20)
 
 
 ets(dataseries) # Exponential smoothing state space model
 plot(ets(dataseries, model = 'ZZZ')) #model = 'ZZZ' : error type, trend type and season type, Z = automatically selected
 
 # AICC
+
+# ARIMA
+# Forecast plot
+# AICC
+# 
+# Rescaled residuals
+# Histogram of residuals
+# QQ-plot
+# (P)ACF plot
+# 
 
