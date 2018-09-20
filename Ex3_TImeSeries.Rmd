@@ -1,20 +1,57 @@
 ---
-title: "Untitled"
-author: "Gina Magnussen"
-date: "September 11, 2018"
+title: "Time series analysis"
+author: "Sivert Selnes"
+date: "\today"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
+library("itsmr")
 ```
+
 
 ```{r}
-#setwd("/home/shomea/g/ginama/H2018/TMA4285 Time series models/Exercise 3 (Project 1)/")
-ds <- read.table("/home/shomea/g/ginama/H2018/TMA4285 Time series models/Exercise 3 (Project 1)/DataEx3G14.txt")
-print(ds)
+setwd("~/Tidsrekker/TMA4285_Project_1")
+dataseries <- read.table("DataEx3G14.txt")
 ```
+
+
+### Abstract
+
+### Introduction
+
+
+### Theory
+ * What is a time series
+ * Calculation of ACF - and what do we use it for?
+ 
+
+ * Calculation of PACF - and what do we use it for?
+
+ * Calculation of model parameters $\phi$, $\theta$ and $\sigma^2$
+ * Need the uncertainty in those as well
+ 
+ * Calculate / arrive at model prediction at sample points
+ * Calculate prediction for future values
+ * Calculate uncertainty in both cases
+ 
+ * Diagnostics: strategies for assessing model choice 
+ 
+### Data analysis
+ * The plots from 1-4 go in here, basicly most of the results of the R-code are displayed here.
+
+### Discussion
+ * Comments on prelim plots: time series, ACF, PACF
+ 
+ * Comments on estimated paramateres and uncertainties in particular
+ 
+ * Comments on fit/prediction of the chosen ARMA model
+ 
+ * Finally, comment on the diagnostics, AICC
+ 
+ 
+### Conclusion
 
 <!--
 What can be assumed?
@@ -27,4 +64,5 @@ If we make other assumptions, write that down.
 
 
 
+## Appendix, References
 
