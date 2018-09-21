@@ -1,8 +1,11 @@
 ---
 title: "Time series analysis"
 author: "Sivert Selnes"
-date: "\today"
-output: html_document
+date: "sept"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 5
 ---
 
 ```{r setup, include=FALSE}
@@ -11,7 +14,7 @@ library("itsmr")
 ```
 
 
-```{r}
+```{r, echo=F}
 setwd("~/Tidsrekker/TMA4285_Project_1")
 dataseries <- read.table("DataEx3G14.txt")
 ```
@@ -23,14 +26,37 @@ dataseries <- read.table("DataEx3G14.txt")
 
 
 ### Theory
- * What is a time series
- * Calculation of ACF - and what do we use it for?
- * Calculation of PACF - and what do we use it for?
+#### What is a time series and an ARMA-process.
+ 
+ A time series is a sequence of data with timestamps. If there is some random noise involved in the data we might represent the time series as an ARMA model. That means the datavalue at a given time $t$ is a linear combination of the last $p$ data realizations added to another linear combination of the last $q$ white-noise terms $Z$. An ARMA(2,1)-process is therefore a model that includes the last two datapoints and the last noise-term. Using the backshift operator $B$ the short story is told by
+ \[
+ \phi(B)X_t =\theta(B)Z_t, \\
+ BX_t = X_{t-1}.
+ \]
+ where the polynomials $\phi$ and $\theta$ in this case is limited to
+ \[
+ \phi(B) = 1-\phi_1B - \phi_2B, \\
+ \theta(B) = 1+\theta_1B. \\
+ \]
+ Then the ARMA(2,1) process is represented by the equation
+ \[
+ X_t =\phi_1X_{t-1} - \phi_2X_{t-2} + Z_t + \theta_1Z_{t-1}.
+ \]
+ 
+#### Calculation of ACF
+After establishing the ARMA-model, we want to plot the sample autocorrelation function (ACF). This will reveal if the data is likely to origin from an actual ARMA(2,1), or if behaves significantly different from expected. The sample autocovariance function (ACVF) is defined as
 
- * Calculation of model parameters $\phi$, $\theta$ and $\sigma^2$
+\[
+\hat{\gamma} = n^{-1}\sum_{t=1}^{n-|h|}(X_{t+|h|}-\bar{X}_n)(X_{t}-\bar{X}_n),
+\]
+and we obtain the ACF be normalizing: $\hat{\rho}(h) = \frac{\hat{\gamma}(h)}{\hat{\gamma}(0)}$.
+
+#### Calculation of PACF
+
+#### Calculation of model parameters $\phi$, $\theta$ and $\sigma^2$
  * Need the uncertainty in those as well
  
- * Calculate / arrive at model prediction at sample points
+#### Model prediction at sample points
  A convenient way to produce model prediction values is to use the innovations algorithm, which simiplifies in the case of a casual ARMA-process. 
  
  Innovations algorithm:
@@ -82,5 +108,5 @@ If we make other assumptions, write that down.
 
 
 
-## Appendix, References
+### Appendix, References
 

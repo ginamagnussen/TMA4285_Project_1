@@ -120,13 +120,27 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Time series analysis</h1>
 <h4 class="author"><em>Sivert Selnes</em></h4>
-<h4 class="date"><em><pre><code>oday</code></pre></em></h4>
+<h4 class="date"><em>sept</em></h4>
 
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#abstract">Abstract</a></li>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#theory">Theory</a><ul>
+<li><a href="#what-is-a-time-series-and-an-arma-process.">What is a time series and an ARMA-process.</a></li>
+<li><a href="#calculation-of-acf">Calculation of ACF</a></li>
+<li><a href="#calculation-of-pacf">Calculation of PACF</a></li>
+<li><a href="#calculation-of-model-parameters-phi-theta-and-sigma2">Calculation of model parameters <span class="math inline">\(\phi\)</span>, <span class="math inline">\(\theta\)</span> and <span class="math inline">\(\sigma^2\)</span></a></li>
+<li><a href="#model-prediction-at-sample-points">Model prediction at sample points</a></li>
+</ul></li>
+<li><a href="#data-analysis">Data analysis</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+<li><a href="#appendix-references">Appendix, References</a></li>
+</ul>
+</div>
 
-<pre class="r"><code>setwd(&quot;~/Tidsrekker/TMA4285_Project_1&quot;)
-dataseries &lt;- read.table(&quot;DataEx3G14.txt&quot;)</code></pre>
 <div id="abstract" class="section level3">
 <h3>Abstract</h3>
 </div>
@@ -135,24 +149,80 @@ dataseries &lt;- read.table(&quot;DataEx3G14.txt&quot;)</code></pre>
 </div>
 <div id="theory" class="section level3">
 <h3>Theory</h3>
+<div id="what-is-a-time-series-and-an-arma-process." class="section level4">
+<h4>What is a time series and an ARMA-process.</h4>
+<p>A time series is a sequence of data with timestamps. If there is some random noise involved in the data we might represent the time series as an ARMA model. That means the datavalue at a given time <span class="math inline">\(t\)</span> is a linear combination of the last <span class="math inline">\(p\)</span> data realizations added to another linear combination of the last <span class="math inline">\(q\)</span> white-noise terms <span class="math inline">\(Z\)</span>. An ARMA(2,1)-process is therefore a model that includes the last two datapoints and the last noise-term. Using the backshift operator <span class="math inline">\(B\)</span> the short story is told by <span class="math display">\[
+ \phi(B)X_t =\theta(B)Z_t, \\
+ BX_t = X_{t-1}.
+ \]</span> where the polynomials <span class="math inline">\(\phi\)</span> and <span class="math inline">\(\theta\)</span> in this case is limited to <span class="math display">\[
+ \phi(B) = 1-\phi_1B - \phi_2B, \\
+ \theta(B) = 1+\theta_1B. \\
+ \]</span> Then the ARMA(2,1) process is represented by the equation <span class="math display">\[
+ X_t =\phi_1X_{t-1} - \phi_2X_{t-2} + Z_t + \theta_1Z_{t-1}.
+ \]</span></p>
+</div>
+<div id="calculation-of-acf" class="section level4">
+<h4>Calculation of ACF</h4>
+<p>After establishing the ARMA-model, we want to plot the sample autocorrelation function (ACF). This will reveal if the data is likely to origin from an actual ARMA(2,1), or if behaves significantly different from expected. The sample autocovariance function (ACVF) is defined as</p>
+<p><span class="math display">\[
+\hat{\gamma} = n^{-1}\sum_{t=1}^{n-|h|}(X_{t+|h|}-\bar{X}_n)(X_{t}-\bar{X}_n),
+\]</span> and we obtain the ACF be normalizing: <span class="math inline">\(\hat{\rho}(h) = \frac{\hat{\gamma}(h)}{\hat{\gamma}(0)}\)</span>.</p>
+</div>
+<div id="calculation-of-pacf" class="section level4">
+<h4>Calculation of PACF</h4>
+</div>
+<div id="calculation-of-model-parameters-phi-theta-and-sigma2" class="section level4">
+<h4>Calculation of model parameters <span class="math inline">\(\phi\)</span>, <span class="math inline">\(\theta\)</span> and <span class="math inline">\(\sigma^2\)</span></h4>
 <ul>
-<li>What is a time series</li>
-<li>Calculation of ACF - and what do we use it for?</li>
-<li><p>Calculation of PACF - and what do we use it for?</p></li>
-<li><p>Calculation of model parameters <span class="math inline">\(\phi\)</span> and <span class="math inline">\(\theta\)</span></p></li>
+<li>Need the uncertainty in those as well</li>
 </ul>
+</div>
+<div id="model-prediction-at-sample-points" class="section level4">
+<h4>Model prediction at sample points</h4>
+<p>A convenient way to produce model prediction values is to use the innovations algorithm, which simiplifies in the case of a casual ARMA-process.</p>
+<p>Innovations algorithm:</p>
+<p><span class="math display">\[
+ v_0 = \kappa(1,1), \\
+ \theta_{n,n-k} = v_k^{-1}(\kappa(n+1,k+1)-\sum_{j=0}^{k-1}\theta_{k,k-j}\theta_{n,n-j}v_j,  0 \leq k &lt; n, \\
+ \]</span></p>
+<p><span class="math display">\[
+ \hat{X} = 
+ \begin{cases}
+ \sum_{j=1}^n \theta_{nj}(X_{n+1-j}-\hat{X}_{n+1-j}) &amp; 1 \leq n &lt; m, \\
+ \phi_1X_n + ... +\phi_pX_{n+1-p} + \sum_{j=1}^p \theta_{nj}(X_{n+1-j}-\hat{X}_{n+1-j}) &amp; n \geq m.
+ \end{cases}
+ \]</span></p>
+<ul>
+<li>Calculate prediction for future values</li>
+<li><p>Calculate uncertainty in both cases</p></li>
+<li><p>Diagnostics: strategies for assessing model choice (AICC)</p></li>
+</ul>
+</div>
 </div>
 <div id="data-analysis" class="section level3">
 <h3>Data analysis</h3>
-</div>
-<div id="discussion" class="section level3">
-<h3>Discussion</h3>
+<ul>
+<li>The plots from 1-4 go in here, basicly most of the results of the R-code are displayed here.</li>
+</ul>
+<p>ARIMA Forecast plot AICC ### Discussion * Comments on prelim plots: time series, ACF, PACF</p>
+<ul>
+<li><p>Comments on estimated paramateres and uncertainties in particular</p></li>
+<li><p>Comments on fit/prediction of the chosen ARMA model</p></li>
+<li><p>Finally, comment on the diagnostics, AICC</p></li>
+</ul>
 </div>
 <div id="conclusion" class="section level3">
 <h3>Conclusion</h3>
+<!--
+What can be assumed?
+- Causal time series (Mentioned in the lecture, Monday 17th Sep)
+
+If we make other assumptions, write that down. 
+
+-->
 </div>
-<div id="appendix-references" class="section level2">
-<h2>Appendix, References</h2>
+<div id="appendix-references" class="section level3">
+<h3>Appendix, References</h3>
 </div>
 
 
