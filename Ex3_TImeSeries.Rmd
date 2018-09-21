@@ -15,7 +15,7 @@ library("itsmr")
 
 
 ```{r, echo=F}
-setwd("~/Tidsrekker/TMA4285_Project_1")
+#setwd("~/Tidsrekker/TMA4285_Project_1")
 dataseries <- read.table("DataEx3G14.txt")
 ```
 
@@ -28,10 +28,10 @@ dataseries <- read.table("DataEx3G14.txt")
 ### Theory
 #### What is a time series and an ARMA-process.
  
- A time series is a sequence of data with timestamps. If there is some random noise involved in the data we might represent the time series as an ARMA model. That means the datavalue at a given time $t$ is a linear combination of the last $p$ data realizations added to another linear combination of the last $q$ white-noise terms $Z$. An ARMA(2,1)-process is therefore a model that includes the last two datapoints and the last noise-term. Using the backshift operator $B$ the short story is told by
+A time series is a sequence of observations with timestamps. If there is some random noise involved in the data, we might represent the time series as an ARMA model. That means that the data value at a given time $t$ is a linear combination of the last $p$ data realizations added to another linear combination of the last $q$ white-noise terms $Z$. An ARMA(2,1)-process is therefore a model that includes the last two datapoints and the last noise-term. Using the backshift operator $B$, this is expressed as
  \[
  \phi(B)X_t =\theta(B)Z_t, \\
- BX_t = X_{t-1}.
+ BX_t = X_{t-1}
  \]
  where the polynomials $\phi$ and $\theta$ in this case is limited to
  \[
@@ -47,9 +47,9 @@ dataseries <- read.table("DataEx3G14.txt")
 After establishing the ARMA-model, we want to plot the sample autocorrelation function (ACF). This will reveal if the data is likely to origin from an ARMA(2,1), or if behaves significantly different from the expected ACF of an ARMA(2,1). The sample autocovariance function (ACVF) is defined as
 
 \[
-\hat{\gamma} = n^{-1}\sum_{t=1}^{n-|h|}(X_{t+|h|}-\bar{X}_n)(X_{t}-\bar{X}_n),
+\hat{\gamma}(h) = n^{-1}\sum_{t=1}^{n-|h|}(X_{t+|h|}-\bar{X}_n)(X_{t}-\bar{X}_n),
 \]
-and we obtain the ACF be normalizing: $\hat{\rho}(h) = \frac{\hat{\gamma}(h)}{\hat{\gamma}(0)}$.
+and we obtain the ACF by normalizing: $\hat{\rho}(h) = \frac{\hat{\gamma}(h)}{\hat{\gamma}(0)}$.
 
 #### Calculation of PACF
 The partial autocorrelation function is the correlation function with lags shorter than $h$ removed. Since the CF is corrected/controlled for the shorter lags up to $h$, it is suited to estimate the appropriate order $p$ for the autoregressive part. The PACF is defined as
@@ -59,7 +59,7 @@ The partial autocorrelation function is the correlation function with lags short
 \alpha(h) = Corr(X_{t+h}-P_{t,h}(X_{t+h}),X_{t}-P_{t,h}(X_{t}))
 \]
 
-and $P_{t,h}X_t$ is the 
+where $P_{t,h}X_t$ is the \todo{Fyll inn her}
 
 #### Calculation of model parameters $\phi$, $\theta$ and $\sigma^2$
  * Need the uncertainty in those as well
@@ -71,7 +71,7 @@ and $P_{t,h}X_t$ is the
  
  \[
  v_0 = \kappa(1,1), \\
- \theta_{n,n-k} = v_k^{-1}(\kappa(n+1,k+1)-\sum_{j=0}^{k-1}\theta_{k,k-j}\theta_{n,n-j}v_j,  0 \leq k < n, \\
+ \theta_{n,n-k} = v_k^{-1}(\kappa(n+1,k+1)-\sum_{j=0}^{k-1}\theta_{k,k-j}\theta_{n,n-j}v_j, \hspace{5mm}  0 \leq k < n \\
  \]
  
  \[
@@ -90,9 +90,7 @@ and $P_{t,h}X_t$ is the
 ### Data analysis
  * The plots from 1-4 go in here, basicly most of the results of the R-code are displayed here.
 
-ARIMA
-Forecast plot
-AICC
+
 ### Discussion
  * Comments on prelim plots: time series, ACF, PACF
  
