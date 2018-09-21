@@ -44,7 +44,7 @@ dataseries <- read.table("DataEx3G14.txt")
  \]
  
 #### Calculation of ACF
-After establishing the ARMA-model, we want to plot the sample autocorrelation function (ACF). This will reveal if the data is likely to origin from an actual ARMA(2,1), or if behaves significantly different from expected. The sample autocovariance function (ACVF) is defined as
+After establishing the ARMA-model, we want to plot the sample autocorrelation function (ACF). This will reveal if the data is likely to origin from an ARMA(2,1), or if behaves significantly different from the expected ACF of an ARMA(2,1). The sample autocovariance function (ACVF) is defined as
 
 \[
 \hat{\gamma} = n^{-1}\sum_{t=1}^{n-|h|}(X_{t+|h|}-\bar{X}_n)(X_{t}-\bar{X}_n),
@@ -52,6 +52,14 @@ After establishing the ARMA-model, we want to plot the sample autocorrelation fu
 and we obtain the ACF be normalizing: $\hat{\rho}(h) = \frac{\hat{\gamma}(h)}{\hat{\gamma}(0)}$.
 
 #### Calculation of PACF
+The partial autocorrelation function is the correlation function with lags shorter than $h$ removed. Since the CF is corrected/controlled for the shorter lags up to $h$, it is suited to estimate the appropriate order $p$ for the autoregressive part. The PACF is defined as
+
+\[
+\alpha(1)=Corr(X_{t+1},X_t), \\
+\alpha(h) = Corr(X_{t+h}-P_{t,h}(X_{t+h}),X_{t}-P_{t,h}(X_{t}))
+\]
+
+and $P_{t,h}X_t$ is the 
 
 #### Calculation of model parameters $\phi$, $\theta$ and $\sigma^2$
  * Need the uncertainty in those as well
