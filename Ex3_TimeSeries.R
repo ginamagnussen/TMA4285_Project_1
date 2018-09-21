@@ -28,24 +28,12 @@ adf.test(dataseries) # Augmented Dickey-Fuller test
 kpss.test(dataseries)
 
 
-
+# The time series is assumed to be more or less without trend or seasonality, 
+# meaning that the sample points should be approx iid N(0, sigma^2). 
+# An ARMA model should then fit quite well.
 
 # Estimate ARMA model coefficients using maximum likelihood, returns ARMA model
 ############################################################
-
-armaFit = arma(dataseries, order = c(2, 1), include.intercept = TRUE, qr.tol = 1e-07)
-summary(armaFit) 
-plot(armaFit) # makes three plots: series, ACF, PACF of data and residuals
-
-
-coef(armaFit)
-vcov(armaFit)
-residuals(armaFit) # 500 resiudals: is this W?
-fitted(armaFit) # Presumeably the X-hat vaules
-print(armaFit)
-
-acf(residuals(armaFit), na.action=na.remove)
-pacf(residuals(armaFit), na.action=na.remove)
 
 ## ARIMA (to forecast)
 arimaFit <- arima(dataseries, order = c(2,0,1))
