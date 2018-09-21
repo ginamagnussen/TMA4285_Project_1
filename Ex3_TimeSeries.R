@@ -39,15 +39,15 @@ kpss.test(dataseries)
 arimaFit <- arima(dataseries, order = c(2,0,1))
 arimaFit
 arimaFit$sigma2
-summary(arimaFit)
-plot(arimaFit$residuals) # Scale these?
-acf(arimaFit$residuals)
-pacf(arimaFit$residuals)
-hist(arimaFit$residuals)
+res_scaled <- arimaFit$residuals/sqrt(arimaFit$sigma2)
+plot(res_scaled) # Scale these?
+acf(res_scaled)
+pacf(res_scaled)
+hist(res_scaled)
+
 
 # QQplots
-qqnorm(arimaFit$residuals, main = "Q-Q Plot: ARMA model"); qqline(arimaFit$residuals) #Axis?
-qqnorm(dataseries, main = "Q-Q Plot: Dataseries"); qqline(dataseries)
+qqnorm(res_scaled, main = "Q-Q Plot: ARMA model"); qqline(res_scaled) #Axis?
 
 # Predicted values of the model for the last 100 samples of the dataseries
 Xhat <- list()
@@ -64,10 +64,8 @@ lines(401:500, Xhat[401:500], col = "red")
 #######################################################################
  # Here we can i) Forecast like on p. 101 in the book or ii) Use the forecast function in R
 class(arimaFit)
-fcast = forecast(dataseries, h=20)
-fcast2 <- forecast(dataseries[1:488], h = 20)
+fcast = forecast(arimaFit, h=20)
 plot(fcast)
-plot(fcast2)
 
 
 # AICC
@@ -75,9 +73,10 @@ arimaFit$aic
 
 
 # Estimate parameters: phi, theta, sigma^2, mean
-frame <- data.frame()
-for (j in 1:1000){
-  smpl <- sample(dataseries, 500, replace = TRUE)
-  #fit <- arima(smp)
+frame <- list()
+B <- 100
+for (j in 1:B){
+  smpl <- sample(res_scaled, 500, replace = TRUE)
+  fit <- arima(smpl, order = c(2,0,1))
 }
 
