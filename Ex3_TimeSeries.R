@@ -37,33 +37,47 @@ kpss.test(dataseries)
 
 ## ARIMA (to forecast)
 arimaFit <- arima(dataseries, order = c(2,0,1))
+arimaFit
+arimaFit$sigma2
 summary(arimaFit)
 plot(arimaFit$residuals) # Scale these?
 acf(arimaFit$residuals)
 pacf(arimaFit$residuals)
 hist(arimaFit$residuals)
-arimaFit$var.coef
+
+# QQplots
+qqnorm(arimaFit$residuals, main = "Q-Q Plot: ARMA model"); qqline(arimaFit$residuals) #Axis?
+qqnorm(dataseries, main = "Q-Q Plot: Dataseries"); qqline(dataseries)
+
+# Predicted values of the model for the last 100 samples of the dataseries
+Xhat <- list()
+phi1 <- arimaFit$coef[1]; phi2 <- arimaFit$coef[2]; theta1 <- arimaFit$coef[3]; res <- arimaFit$residuals
+for (t in 3:500){
+  Xhat[t] = phi1*dataseries[t-1] + phi2*dataseries[t-2] + theta1*res[t-1] + res[t]
+}
+plot(401:500, dataseries[401:500], "l")
+lines(401:500, Xhat[401:500], col = "red")
+# Add title, xlab and ylab
 
 
 # Forecasting
 #######################################################################
  # Here we can i) Forecast like on p. 101 in the book or ii) Use the forecast function in R
-class(armaFit)
+class(arimaFit)
 fcast = forecast(dataseries, h=20)
+fcast2 <- forecast(dataseries[1:488], h = 20)
+plot(fcast)
+plot(fcast2)
 
-
-ets(dataseries) # Exponential smoothing state space model
-plot(ets(dataseries, model = 'ZZZ')) #model = 'ZZZ' : error type, trend type and season type, Z = automatically selected
 
 # AICC
+arimaFit$aic
 
-# ARIMA
-# Forecast plot
-# AICC
-# 
-# Rescaled residuals
-# Histogram of residuals
-# QQ-plot
-# (P)ACF plot
-# 
+
+# Estimate parameters: phi, theta, sigma^2, mean
+frame <- data.frame()
+for (j in 1:1000){
+  smpl <- sample(dataseries, 500, replace = TRUE)
+  #fit <- arima(smp)
+}
 
