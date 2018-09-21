@@ -25,18 +25,13 @@ Pacf(dataseries) # Partial ACF
 #Check stationarity
 adf.test(dataseries) # Augmented Dickey-Fuller test
                       # p-value < 0.05 indicates the TS is stationary
-kpss.test(dataseries)
 
 
-# The time series is assumed to be more or less without trend or seasonality, 
-# meaning that the sample points should be approx iid N(0, sigma^2). 
-# An ARMA model should then fit quite well.
-
-# Estimate ARMA model coefficients using maximum likelihood, returns ARMA model
+# Estimate ARMA model coefficients using maximum likelihood
 ############################################################
 
-## ARIMA (to forecast)
-arimaFit <- arima(dataseries, order = c(2,0,1))
+## ARIMA
+arimaFit <- arima(dataseries, order = c(2,0,1), method = "ML")
 arimaFit
 arimaFit$sigma2
 res_scaled <- arimaFit$residuals/sqrt(arimaFit$sigma2)
@@ -60,17 +55,15 @@ lines(401:500, Xhat[401:500], col = "red")
 # Add title, xlab and ylab
 
 
-# Forecasting
-#######################################################################
- # Here we can i) Forecast like on p. 101 in the book or ii) Use the forecast function in R
-class(arimaFit)
+# Forecast
+##################################################################
 fcast = forecast(arimaFit, h=20)
 plot(fcast)
 
 
 # AICC
 arimaFit$aic
-
+# Plots of AICC 
 
 # Estimate parameters: phi, theta, sigma^2, mean
 frame <- list()
