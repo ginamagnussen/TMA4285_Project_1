@@ -43,25 +43,44 @@ A time series is a sequence of observations with timestamps. If there is some ra
  X_t =\phi_1X_{t-1} - \phi_2X_{t-2} + Z_t + \theta_1Z_{t-1}.
  \]
  
-#### Calculation of ACF
-After establishing the ARMA-model, we want to plot the sample autocorrelation function (ACF). This will reveal if the data is likely to origin from an ARMA(2,1), or if behaves significantly different from the expected ACF of an ARMA(2,1). The sample autocovariance function (ACVF) is defined as
+#### The autocorrelation function
+To determine the best order of ARMA(p,q) for representing the time series we want to plot the sample autocorrelation function (ACF), which is computed from the autocovariance function. The ACVF is defined as
 
 \[
-\hat{\gamma}(h) = n^{-1}\sum_{t=1}^{n-|h|}(X_{t+|h|}-\bar{X}_n)(X_{t}-\bar{X}_n),
+\gamma(h) = Cov(X_{t+h}-X_{t}) = E(X_{t+h}-\mu)(X_{t}-\mu.)
 \]
-and we obtain the ACF by normalizing: $\hat{\rho}(h) = \frac{\hat{\gamma}(h)}{\hat{\gamma}(0)}$.
+and the sample ACVF becomes
+\[
+\hat{\gamma}(h)=n^{-1}\sum_{t=1}^{n-|h|}(x_{t+h}-\bar{x})(x_{t}-\bar{x}), \quad -n<h<n.
+\]
+Note that for this particular time series sample it is assumed to be an ARMA(2,1), hence the true mean is (assumed) $\mu=0$.
 
-#### Calculation of PACF
-The partial autocorrelation function is the correlation function with lags shorter than $h$ removed. Since the CF is corrected/controlled for the shorter lags up to $h$, it is suited to estimate the appropriate order $p$ for the autoregressive part. The PACF is defined as
+Finally we obtain the ACF by normalization of the ACVF: $\hat{\rho}(h) = \frac{\hat{\gamma}(h)}{\hat{\gamma}(0)}$.
 
+The plot of the ACF $\hat{\gamma}(h)$ will reveal the time series' correlation at different lags $h$, thus making it suitable for determing the appropriate number of terms in the moving-average part of the model. An MA($q$) is dependent on white noise terms up to and including lag $h=q$. We expect to see a sharp decline in correlation at lags greater than this "memory level" $q$, since the sample value is no longer dependent on the previous noise.
+
+
+#### The partial autocorrelation function
+The partial autocorrelation function is the correlation function with the linear effects of $\{x_{t+1},x_{t+2},...,x_{t-1+h}\}$ are removed. That means that the only contribution to the correlation between two values at lag $h$ is the direct correlation between the two, and not the implicit correlation from one $x$ to the next, and so on. For example will an AR(1)-process have implications for realizations far beyond one time step, but removing this recursive feature we can use the PACF for deciding on the appropriate order $p$. 
 \[
 \alpha(1)=Corr(X_{t+1},X_t), \\
 \alpha(h) = Corr(X_{t+h}-P_{t,h}(X_{t+h}),X_{t}-P_{t,h}(X_{t}))
 \]
 
-where $P_{t,h}X_t$ is the \todo{Fyll inn her}
+where $P_{t,h}X_t$ is the best linear prediction of $X_{t+h}$ given $\{x_{t+1},x_{t+2},...,x_{t-1+h}\}$.
 
-#### Calculation of model parameters $\phi$, $\theta$ and $\sigma^2$
+#### Model parameters $\phi$, $\theta$ and $\sigma^2$
+ For estimation of the model parameters the maximum likelihood function is used. We assume that the model order is known, and that the data has zero mean. From earlier we assumed the model 
+ 
+\[
+ X_t =\phi_1X_{t-1} - \phi_2X_{t-2} + Z_t + \theta_1Z_{t-1}.
+\]
+The $\{X_t\}$ is gaussian distributed since the white noise included in the model is assumed to be normal distributed and independent of each other, $\{Z_t\} \sim N(0,\sigma^2)$. The approach for estimating to parameters is then to maximize a log-likelihood function that follows a gaussian distribution. This optimization is done numerically. The likelihood function is defined as 
+
+\[
+L(\phi, \theta, \sigma^2) = f_{\phi, \theta, \sigma^2}(X_1,...,X_n) \\
+= \frac{1}{(2\pi)^{n/2}|\Gamma_n|^{1/2}}\exp{(-\frac{1}{2}X'\Gamma_n^{-1}X)}.
+\]
  * Need the uncertainty in those as well
  
 #### Model prediction at sample points
