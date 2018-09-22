@@ -85,23 +85,15 @@ where the $\Gamma$ is the covariance matrix of the series $\{X\}$.
 
 
 #### Model prediction at sample points
-A convenient way to produce model prediction values is to use the innovations algorithm, which simiplifies in the case of a casual ARMA-process. 
- 
- Innovations algorithm:
- 
- \[
- v_0 = \kappa(1,1), \\
- \theta_{n,n-k} = v_k^{-1}(\kappa(n+1,k+1)-\sum_{j=0}^{k-1}\theta_{k,k-j}\theta_{n,n-j}v_j, \hspace{5mm}  0 \leq k < n \\
- \]
- 
- \[
- \hat{X} = 
+A convenient way to forecasting an ARMA(p,q) is to use the innovations algorithm
+
+\[
+ X_{n+1}^n =
  \begin{cases}
- \sum_{j=1}^n \theta_{nj}(X_{n+1-j}-\hat{X}_{n+1-j}) & 1 \leq n < m, \\
- \phi_1X_n + ... +\phi_pX_{n+1-p} + \sum_{j=1}^p \theta_{nj}(X_{n+1-j}-\hat{X}_{n+1-j}) & n \geq m.
+ \sum_{j=1}^n \theta_{nj}(X_{n+1-j}-X_{n+1-j}^{n-j}) & n <p, \\
+ \sum_{j=1}^p \phi_jX_{n+1-j}+\sum_{j=1}^q \theta_{nj}(X_{n+1-j}-X_{n+1-j}^{n-j}) & n\geq p.
  \end{cases}
  \]
- 
  * Calculate prediction for future values
  * Calculate uncertainty in both cases
  
