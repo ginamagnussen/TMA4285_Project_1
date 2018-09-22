@@ -70,21 +70,22 @@ The partial autocorrelation function is the correlation function with the linear
 where $P_{t,h}X_t$ is the best linear prediction of $X_{t+h}$ given $\{x_{t+1},x_{t+2},...,x_{t-1+h}\}$.
 
 #### Model parameters $\phi$, $\theta$ and $\sigma^2$
- For estimation of the model parameters the maximum likelihood function is used. We assume that the model order is known, and that the data has zero mean. From earlier we assumed the model 
+ For estimation of the model parameters we use the maximum likelihood function. We assume that the model order $(2,1)$ is known, and that the data has zero mean. This results in the ARMA model 
  
 \[
  X_t =\phi_1X_{t-1} - \phi_2X_{t-2} + Z_t + \theta_1Z_{t-1}.
 \]
-The $\{X_t\}$ is gaussian distributed since the white noise included in the model is assumed to be normal distributed and independent of each other, $\{Z_t\} \sim N(0,\sigma^2)$. The approach for estimating to parameters is then to maximize a log-likelihood function that follows a gaussian distribution. This optimization is done numerically. The likelihood function is defined as 
+The $\{X_t\}$ is gaussian distributed, since the white noise included is assumed to be normal, independently distributed, $\{Z_t\} \sim N(0,\sigma^2)$. The approach for estimating to parameters is then to maximize a likelihood function of a gaussian distribution. This optimization for determining the best parameters is done numerically. The likelihood function is the familiar multi variable normal distribution, 
 
 \[
 L(\phi, \theta, \sigma^2) = f_{\phi, \theta, \sigma^2}(X_1,...,X_n) \\
-= \frac{1}{(2\pi)^{n/2}|\Gamma_n|^{1/2}}\exp{(-\frac{1}{2}X'\Gamma_n^{-1}X)}.
+= \frac{1}{(2\pi)^{n/2}|\Gamma_n|^{1/2}}\exp{(-\frac{1}{2}X'\Gamma_n^{-1}X)},
 \]
- * Need the uncertainty in those as well
- 
+where the $\Gamma$ is the covariance matrix of the series $\{X\}$. 
+
+
 #### Model prediction at sample points
- A convenient way to produce model prediction values is to use the innovations algorithm, which simiplifies in the case of a casual ARMA-process. 
+A convenient way to produce model prediction values is to use the innovations algorithm, which simiplifies in the case of a casual ARMA-process. 
  
  Innovations algorithm:
  
