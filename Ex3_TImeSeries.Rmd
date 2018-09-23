@@ -1,11 +1,11 @@
 ---
-title: "Time series analysis"
-author: "Sivert Selnes"
-date: "sept"
-output: 
+title: "Analysis of an ARMA(2,1)"
+author: "Sivert Selnes, Gina Magnussen, Kristine Lund Mathisen"
+date: "23. september 2018"
+output:
   html_document:
     toc: true
-    toc_depth: 5
+    toc_depth: 2
 ---
 
 ```{r setup, include=FALSE}
@@ -26,13 +26,13 @@ dataseries <- ts(read.table("DataEx3G14.txt"))
 ```
 
 
-### Abstract
+# Abstract
 
-### Introduction
+# Introduction
 
 
-### Theory
-#### What is a time series and an ARMA-process.
+# Theory
+## What is a time series and an ARMA-process.
  
 A time series is a sequence of observations with timestamps. If there is some random noise involved in the data, we might represent the time series as an ARMA model. That means that the data value at a given time $t$ is a linear combination of the last $p$ data realizations added to another linear combination of the last $q$ white-noise terms $Z$. An ARMA(2,1)-process is therefore a model that includes the last two datapoints and the last noise-term. Using the backshift operator $B$, this is expressed as
  \[
@@ -49,7 +49,7 @@ A time series is a sequence of observations with timestamps. If there is some ra
  X_t =\phi_1X_{t-1} - \phi_2X_{t-2} + Z_t + \theta_1Z_{t-1}.
  \]
  
-#### The autocorrelation function
+## The autocorrelation function
 To determine the best order of ARMA(p,q) for representing the time series we want to plot the sample autocorrelation function (ACF), which is computed from the autocovariance function. The ACVF is defined as
 
 \[
@@ -66,7 +66,7 @@ Finally we obtain the ACF by normalization of the ACVF: $\hat{\rho}(h) = \frac{\
 The plot of the ACF $\hat{\gamma}(h)$ will reveal the time series' correlation at different lags $h$, thus making it suitable for determing the appropriate number of terms in the moving-average part of the model. An MA($q$) is dependent on white noise terms up to and including lag $h=q$. We expect to see a sharp decline in correlation at lags greater than this "memory level" $q$, since the sample value is no longer dependent on the previous noise.
 
 
-#### The partial autocorrelation function
+## The partial autocorrelation function
 The partial autocorrelation function is the correlation function with the linear effects of $\{x_{t+1},x_{t+2},...,x_{t-1+h}\}$ are removed. That means that the only contribution to the correlation between two values at lag $h$ is the direct correlation between the two, and not the implicit correlation from one $x$ to the next, and so on. For example will an AR(1)-process have implications for realizations far beyond one time step, but removing this recursive feature we can use the PACF for deciding on the appropriate order $p$. 
 \[
 \alpha(1)=Corr(X_{t+1},X_t), \\
@@ -75,7 +75,7 @@ The partial autocorrelation function is the correlation function with the linear
 
 where $P_{t,h}X_t$ is the best linear prediction of $X_{t+h}$ given $\{x_{t+1},x_{t+2},...,x_{t-1+h}\}$.
 
-#### Model parameters $\phi$, $\theta$ and $\sigma^2$
+## Model parameters $\phi$, $\theta$ and $\sigma^2$
  For estimation of the model parameters we use the maximum likelihood function. We assume that the model order $(2,1)$ is known, and that the data has zero mean. This results in the ARMA model 
  
 \[
@@ -90,7 +90,7 @@ L(\phi, \theta, \sigma^2) = f_{\phi, \theta, \sigma^2}(X_1,...,X_n) \\
 where the $\Gamma$ is the covariance matrix of the series $\{X\}$. 
 
 
-#### Model prediction at sample points
+## Model prediction at sample points
 A convenient way to forecasting an ARMA(p,q) is to use the innovations algorithm, which recursively calculate each forecast ("innovation").
 
 \[
@@ -102,25 +102,25 @@ A convenient way to forecasting an ARMA(p,q) is to use the innovations algorithm
  \]
  
 
-#### Model diagnostics: strategies for assessing model choice
+## Model diagnostics: strategies for assessing model choice
 When the model parameters $(p,q)$ is chosen for the ARMA-process, the residuals should ideally only consist of white noise (otherwise the model choice does not cover the underlying causes). Therefore we can apply the ACF and the PACF to the residuals, rejecting the model if the correlations exceed the standard deviation more often than expected (for example 5 $\%$ of the time for a 95 $\%$ c.i.).
 
-### Data analysis
+# Data analysis
 
-#### Plot of time series, ACF, PACF
+## Plot of time series, ACF, PACF
 ```{r}
 plot.ts(dataseries) # Plot of the time series itself
 acf(dataseries) # Autocorrelation function
 Pacf(dataseries) # Partial ACF
 ```
  
-#### Check for stationarity
+## Check for stationarity
 ```{r}
  #Check stationarity
 adf.test(dataseries) # Augmented Dickey-Fuller test
 ```
 
-#### Model fit
+## Model fitting
 ```{r}
 # Estimate ARMA model coefficients using maximum likelihood
 arimaFit <- arima(dataseries, order = c(2,0,1), method = "ML")
@@ -131,7 +131,7 @@ plot(res_scaled)
 hist(res_scaled)
 ```
 
-#### Analysis of the residuals
+## Analysis of the residuals
 
 ```{r}
 acf(res_scaled) # To find order of MA(q) (lags)
@@ -144,7 +144,7 @@ vcov(arimaFit)
 
 ```
 
-#### Prediction for sample values
+## Prediction for sample values
 ```{r}
 # QQplots
 qqnorm(res_scaled, main = "Q-Q Plot: ARMA model"); qqline(res_scaled) #Axis?
@@ -170,7 +170,7 @@ plot(fcast)
 
 ```
 
-#### AICc
+## AICc
 ```{r}
 # AIC
 arimaFit$aic
@@ -191,7 +191,7 @@ ggplot(frame, aes(p,q)) + geom_raster(aes(fill = aic)) #+ scale_fill_gradientn(c
 ```
 
 
-### Discussion
+# Discussion
  * Comments on prelim plots: time series, ACF, PACF
  
  * Comments on estimated paramateres and uncertainties in particular
@@ -201,18 +201,11 @@ ggplot(frame, aes(p,q)) + geom_raster(aes(fill = aic)) #+ scale_fill_gradientn(c
  * Finally, comment on the diagnostics, AICC
  
  
-### Conclusion
-
-<!--
-What can be assumed?
-- Causal time series (Mentioned in the lecture, Monday 17th Sep)
-
-If we make other assumptions, write that down. 
-
--->
+# Conclusion
 
 
 
 
-### Appendix, References
+
+# Appendix, References
 
