@@ -27,10 +27,9 @@ dataseries <- ts(read.table("DataEx3G14.txt"))
 
 
 # Abstract
-In this exercise we analyse an ARMA(2,1) time series. The series is first explored using its sample autocorrelation function (ACF), its partial ACF, and with stationarity checks. We then estimate the ARMA(2,1) coefficients and predict values for both existing and future data points, and checking the model assumtions by inspecting the residuals. Finally, in diagnosis of the model the choice of model order is examined.
 
 # Introduction
-Analysis on time series data has multiple objectives. Representing a time series as an ARMA-model we are able to describe data in a very compact an efficient way. Furthermore we can easier interpret the series (given that the ARMA actually model the reality), since we can distinguish noise from signal say more about the implications for the "outside" noise and the "inherent" fluctuations. It is also possible to do forecasting by generating new realizations ("innovations") of the chosen model, which of course is subject to future random noise and uncertianty in the model coefficients.
+
 
 # Theory
 ## What is a time series and an ARMA-process.
@@ -92,7 +91,7 @@ where the $\Gamma$ is the covariance matrix of the series $\{X\}$.
 
 
 ## Model prediction at sample points
-A convenient way to forecasting an ARMA(p,q) is to use the innovations algorithm, which recursively calculate each forecast ("innovation").
+A convenient way to forecasting an ARMA(p,q) is to use the innovations algorithm, which recursively calculates each forecast ("innovation").
 
 \[
  X_{n+1}^n =
@@ -104,7 +103,7 @@ A convenient way to forecasting an ARMA(p,q) is to use the innovations algorithm
  
 
 ## Model diagnostics: strategies for assessing model choice
-When the model parameters $(p,q)$ is chosen for the ARMA-process, the residuals should ideally only consist of white noise (otherwise the model choice does not cover the underlying causes). Therefore we can apply the ACF and the PACF to the residuals, rejecting the model if the correlations exceed the standard deviation more often than expected (for example 5 $\%$ of the time for a 95 $\%$ c.i.).
+When the model parameters $(p,q)$ are chosen for the ARMA-process, the residuals should ideally only consist of white noise (otherwise the model choice does not cover the underlying causes). Therefore we can apply the ACF and the PACF to the residuals, rejecting the model if the correlations exceed the standard deviation more often than expected (for example 5 $\%$ of the time for a 95 $\%$ c.i.).
 
 # Data analysis
 
@@ -116,7 +115,7 @@ Pacf(dataseries) # Partial ACF
 ```
  
 ## Check for stationarity
-```{r}
+```{r, warning=FALSE, message=FALSE}
  #Check stationarity
 adf.test(dataseries) # Augmented Dickey-Fuller test
 ```
@@ -126,10 +125,9 @@ adf.test(dataseries) # Augmented Dickey-Fuller test
 # Estimate ARMA model coefficients using maximum likelihood
 arimaFit <- arima(dataseries, order = c(2,0,1), method = "ML")
 arimaFit
-arimaFit$sigma2
 res_scaled <- arimaFit$residuals/sqrt(arimaFit$sigma2)
-plot(res_scaled)
-hist(res_scaled)
+plot(res_scaled, main ="Rescaled residuals")
+hist(res_scaled, main ="Histogram of rescaled residuals")
 ```
 
 ## Analysis of the residuals
@@ -138,9 +136,6 @@ hist(res_scaled)
 acf(res_scaled) # To find order of MA(q) (lags)
 pacf(res_scaled) # To find order of AR(p)
 
-acf(dataseries)
-pacf(dataseries)
-
 vcov(arimaFit)
 
 ```
@@ -148,7 +143,7 @@ vcov(arimaFit)
 ## Prediction for sample values
 ```{r}
 # QQplots
-qqnorm(res_scaled, main = "Q-Q Plot: ARMA model"); qqline(res_scaled) #Axis?
+qqnorm(res_scaled, main = "Q-Q Plot: ARMA model"); qqline(res_scaled) 
 
 # Predicted values of the model for the last 100 samples of the dataseries
 Xhat <- list()
@@ -156,9 +151,9 @@ phi1 <- arimaFit$coef[1]; phi2 <- arimaFit$coef[2]; theta1 <- arimaFit$coef[3]; 
 for (t in 3:500){
   Xhat[t] = phi1*dataseries[t-1] + phi2*dataseries[t-2] + theta1*res[t-1] + res[t]
 }
-plot(401:500, dataseries[401:500], "l")
+plot(401:500, dataseries[401:500], "l", main = "Time series and predicted values", xlab = "Time step", ylab = "Value")
 lines(401:500, Xhat[401:500], col = "red")
-# Add title, xlab and ylab
+
 
 
 # Forecast
@@ -172,7 +167,7 @@ plot(fcast)
 ```
 
 ## AICc
-```{r}
+```{r, warning = FALSE, message=FALSE}
 # AIC
 arimaFit$aic
 
@@ -186,7 +181,7 @@ for(p in 1:5){
   }
 }
 frame <- frame[-1,]
-ggplot(frame, aes(p,q)) + geom_raster(aes(fill = aic)) #+ scale_fill_gradientn(colours=c("#0000FFFF","#FFFFFFFF","#FF0000FF")) # Alternative color gradient
+ggplot(frame, aes(p,q)) + geom_raster(aes(fill = aic))
 
 
 ```
@@ -195,11 +190,39 @@ ggplot(frame, aes(p,q)) + geom_raster(aes(fill = aic)) #+ scale_fill_gradientn(c
 # Discussion
  * Comments on prelim plots: time series, ACF, PACF
  
+ 
+The given time series is assumed to be without trend and seasonality. If we did not know this, the time series plot would suggest this as there is no apparent trend or repeating patterns visible.
+
+ACF: There is most correlation at lag $h=1,2$ and $3$, and thus these values could be appropriate choices for $q$.
+
+PACF: From the partial correlation plot, we see that lag $h=1$ could be a good choice for $p$. 
+
+In addition, the augmented Dickey-Fuller test supports the assumption of a stationary time series.
+ 
  * Comments on estimated paramateres and uncertainties in particular
+ 
+Estimated values and uncertainties for model coefficients $\phi, \theta$ and $\sigma^2$ can be found under "Model fitting" in "Data analysis". Note that due to the linearity of the assumed ARMA-model, the standard deviation of the intercept is the standard error for $\sigma^2$. The standard error for all parameters ar fairly small, indicating a close fit to the data.
  
  * Comments on fit/prediction of the chosen ARMA model
  
+The Q-Q plot shows that the residuals seem to be normally distributed, and thus that the model is a good fit. 
+Calculating the predicted series $\hat{X}_t$ for the last hundred time steps of the series and plotting it against the original series, we can see that the predictions are very accurate.
+
+Forecasting from the model, it can be expected that the predicted future values will be more and more similar to the mean with time, since the next step is dependent on the previous one. This seems to be the case.
+
+ 
+ 
  * Finally, comment on the diagnostics, AICC
+ 
+Further analysis of the fit of the ARMA(2,1)-model includes looking at the residuals. 
+If the model is a good fit, the rescaled residuals should follow a white noise process with mean equal to zero and variance equal to one. 
+
+Thus the graph of the rescaled residuals should resemble that of a WN(0,1) process. In addition, the histogram of the residuals is a rough check for the fit of the model. Both these plots support the choice of an AMRA(2,1)-model.
+
+A more precise check is viewing the ACF and the PACF. Since correlations for more or less all lags $h$ do not exceed the standard deviation, the chosen model seems to be a good fit.
+
+A low AIC value supports this further. For comparison, ARMA(p,q) models were fitted for $p=1,...,5$ and $q=1,...5$ and the corresponding AIC values were plotted in a raster plot. 
+This plot also indicates that the fitted model is a good choice.
  
  
 # Conclusion
@@ -209,4 +232,3 @@ ggplot(frame, aes(p,q)) + geom_raster(aes(fill = aic)) #+ scale_fill_gradientn(c
 
 
 # Appendix, References
-
