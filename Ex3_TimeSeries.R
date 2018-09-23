@@ -66,7 +66,7 @@ lines(401:500, Xhat[401:500], col = "red")
 ##################################################################
 fcast = forecast(arimaFit, h=20)
 pred <- predict(arimaFit, n.ahead = 20, se.fit = TRUE)
-pplot(fcast)
+plot(fcast)
 
 
 

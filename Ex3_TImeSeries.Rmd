@@ -10,13 +10,19 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library("itsmr")
+
+library("itsmr") # Time series analysis using the Innovations Algorithm
+library("TTR") # Functions to create Technical Trading Rules
+library("aTSA")
+library("tseries") # Time series analysis and computational finance
+library("forecast")
+library("ggplot2")
 ```
 
 
 ```{r, echo=F}
 #setwd("~/Tidsrekker/TMA4285_Project_1")
-dataseries <- read.table("DataEx3G14.txt")
+dataseries <- ts(read.table("DataEx3G14.txt"))
 ```
 
 
@@ -98,9 +104,91 @@ A convenient way to forecasting an ARMA(p,q) is to use the innovations algorithm
 
 #### Model diagnostics: strategies for assessing model choice
 When the model parameters $(p,q)$ is chosen for the ARMA-process, the residuals should ideally only consist of white noise (otherwise the model choice does not cover the underlying causes). Therefore we can apply the ACF and the PACF to the residuals, rejecting the model if the correlations exceed the standard deviation more often than expected (for example 5 $\%$ of the time for a 95 $\%$ c.i.).
- 
+
 ### Data analysis
- * The plots from 1-4 go in here, basicly most of the results of the R-code are displayed here.
+
+#### Plot of time series, ACF, PACF
+```{r}
+plot.ts(dataseries) # Plot of the time series itself
+acf(dataseries) # Autocorrelation function
+Pacf(dataseries) # Partial ACF
+```
+ 
+#### Check for stationarity
+```{r}
+ #Check stationarity
+adf.test(dataseries) # Augmented Dickey-Fuller test
+```
+
+#### Model fit
+```{r}
+# Estimate ARMA model coefficients using maximum likelihood
+arimaFit <- arima(dataseries, order = c(2,0,1), method = "ML")
+arimaFit
+arimaFit$sigma2
+res_scaled <- arimaFit$residuals/sqrt(arimaFit$sigma2)
+plot(res_scaled)
+hist(res_scaled)
+```
+
+#### Analysis of the residuals
+
+```{r}
+acf(res_scaled) # To find order of MA(q) (lags)
+pacf(res_scaled) # To find order of AR(p)
+
+acf(dataseries)
+pacf(dataseries)
+
+vcov(arimaFit)
+
+```
+
+#### Prediction for sample values
+```{r}
+# QQplots
+qqnorm(res_scaled, main = "Q-Q Plot: ARMA model"); qqline(res_scaled) #Axis?
+
+# Predicted values of the model for the last 100 samples of the dataseries
+Xhat <- list()
+phi1 <- arimaFit$coef[1]; phi2 <- arimaFit$coef[2]; theta1 <- arimaFit$coef[3]; res <- arimaFit$residuals
+for (t in 3:500){
+  Xhat[t] = phi1*dataseries[t-1] + phi2*dataseries[t-2] + theta1*res[t-1] + res[t]
+}
+plot(401:500, dataseries[401:500], "l")
+lines(401:500, Xhat[401:500], col = "red")
+# Add title, xlab and ylab
+
+
+# Forecast
+##################################################################
+fcast = forecast(arimaFit, h=20)
+pred <- predict(arimaFit, n.ahead = 20, se.fit = TRUE)
+plot(fcast)
+
+
+
+```
+
+#### AICc
+```{r}
+# AIC
+arimaFit$aic
+
+# Plots of AIC
+# Which order p,q is best, compare AIC
+frame <- data.frame(p = 0, q = 0, aic = 0)
+for(p in 1:5){
+  for(q in 1:5){
+    fit <- arima(dataseries, order = c(p,0,q), method = "ML")
+    frame <- rbind(frame, c(p,q,fit$aic))
+  }
+}
+frame <- frame[-1,]
+ggplot(frame, aes(p,q)) + geom_raster(aes(fill = aic)) #+ scale_fill_gradientn(colours=c("#0000FFFF","#FFFFFFFF","#FF0000FF")) # Alternative color gradient
+
+
+```
 
 
 ### Discussion
