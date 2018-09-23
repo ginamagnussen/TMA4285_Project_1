@@ -24,7 +24,7 @@ Pacf(dataseries) # Partial ACF
 
 #Check stationarity
 adf.test(dataseries) # Augmented Dickey-Fuller test
-                      # p-value < 0.05 indicates the TS is stationary
+# p-value < 0.05 indicates the TS is stationary
 
 
 # Estimate ARMA model coefficients using maximum likelihood
@@ -35,10 +35,17 @@ arimaFit <- arima(dataseries, order = c(2,0,1), method = "ML")
 arimaFit
 arimaFit$sigma2
 res_scaled <- arimaFit$residuals/sqrt(arimaFit$sigma2)
-plot(res_scaled) # Scale these?
-acf(res_scaled)
-pacf(res_scaled)
+plot(res_scaled)
 hist(res_scaled)
+
+## Order selection
+acf(res_scaled) # To find order of MA(q) (lags)
+pacf(res_scaled) # To find order of AR(p)
+
+acf(dataseries)
+pacf(dataseries)
+
+vcov(arimaFit)
 
 
 # QQplots
@@ -58,18 +65,25 @@ lines(401:500, Xhat[401:500], col = "red")
 # Forecast
 ##################################################################
 fcast = forecast(arimaFit, h=20)
-plot(fcast)
+pred <- predict(arimaFit, n.ahead = 20, se.fit = TRUE)
+pplot(fcast)
 
 
-# AICC
+
+# AIC
 arimaFit$aic
-# Plots of AICC 
 
-# Estimate parameters: phi, theta, sigma^2, mean
-frame <- list()
-B <- 100
-for (j in 1:B){
-  smpl <- sample(res_scaled, 500, replace = TRUE)
-  fit <- arima(smpl, order = c(2,0,1))
+# Plots of AIC
+# Which order p,q is best, compare AIC
+frame <- data.frame(p = 0, q = 0, aic = 0)
+for(p in 1:5){
+  for(q in 1:5){
+    fit <- arima(dataseries, order = c(p,0,q), method = "ML")
+    frame <- rbind(frame, c(p,q,fit$aic))
+  }
 }
+frame <- frame[-1,]
+ggplot(frame, aes(p,q)) + geom_raster(aes(fill = aic)) #+ scale_fill_gradientn(colours=c("#0000FFFF","#FFFFFFFF","#FF0000FF")) # Alternative color gradient
+
+
 
