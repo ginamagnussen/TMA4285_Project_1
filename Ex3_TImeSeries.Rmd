@@ -193,9 +193,9 @@ ggplot(frame, aes(p,q)) + geom_raster(aes(fill = aic))
  
 The given time series is assumed to be without trend and seasonality. If we did not know this, the time series plot would suggest this as there is no apparent trend or repeating patterns visible.
 
-ACF: There is most correlation at lag $h=1,2$ and $3$, and thus these values could be appropriate choices for $q$.
+ACF: There is most correlation at lag $h=1,2$ and $3$, and thus $q=3$ could be an appropriate choice for the moving average.
 
-PACF: From the partial correlation plot, we see that lag $h=1$ could be a good choice for $p$. 
+PACF: From the partial correlation plot, we see that lag $h=2$ could be a good choice for $p$. 
 
 In addition, the augmented Dickey-Fuller test supports the assumption of a stationary time series.
  
@@ -226,9 +226,7 @@ This plot also indicates that the fitted model is a good choice, since the ARMA(
  
  
 # Conclusion
-
-
-
+The time series fulfilled the assumtion of stationarity, and an ARMA(p,q) could therefore be fitted to the data. The analysis of the time series suggested that the (2,1) model was a good fit to the data since the residuals showed no evidence of components that differed from white noise. The initial ACF and PACF plots suggest, however, an ARMA of order (2,3), since the correlation (and partial correlation) was significant up to $p=2$ and $q=3$. Finally, the AIC raster plot gave the lowest AIC for a model of order (2,1).
 
 
 # Appendix, References
